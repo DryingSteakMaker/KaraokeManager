@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="KaraokeManager.Views.RoomOpenConfirmationWindow"
+        Width="360" Height="160" MinWidth="360" MinHeight="160"
+        CanResize="False" ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Title="Mở phòng">
+  <Window.Styles>
+    <Style Selector="Button.roomAction"><Setter Property="Background" Value="#EEF1EF"/><Setter Property="Foreground" Value="#263B35"/><Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="12,7"/></Style>
+    <Style Selector="Button.roomAction:pointerover"><Setter Property="Foreground" Value="#263B35"/></Style>
+    <Style Selector="Button.primary"><Setter Property="Background" Value="#263B35"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="14,7"/></Style>
+    <Style Selector="Button.primary:pointerover"><Setter Property="Foreground" Value="White"/></Style>
+  </Window.Styles>
+  <Border Background="#FFFFFF" Padding="22">
+    <Grid RowDefinitions="*,Auto" RowSpacing="16">
+      <TextBlock x:Name="PromptText" FontSize="16" Foreground="#263B35" VerticalAlignment="Center" TextWrapping="Wrap"/>
+      <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+        <Button x:Name="CancelButton" Classes="roomAction" Click="Cancel_Click" Content="Hủy bỏ"/>
+        <Button x:Name="OkButton" Classes="primary" Click="Ok_Click" Content="OK" IsDefault="True"/>
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>

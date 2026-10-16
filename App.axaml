@@ -1,0 +1,27 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="KaraokeManager.App"
+             xmlns:local="using:KaraokeManager"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+    <Application.Resources>
+      <SolidColorBrush x:Key="AccentBrush" Color="#263B35" />
+      <SolidColorBrush x:Key="AccentTintBrush" Color="#E9EEEB" />
+      <SolidColorBrush x:Key="CanvasBrush" Color="#F5F6F8" />
+      <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="NavigationBrush" Color="#E8EEE9" />
+      <SolidColorBrush x:Key="NavigationTextBrush" Color="#252A31" />
+      <SolidColorBrush x:Key="NavigationMutedBrush" Color="#4F5A54" />
+      <SolidColorBrush x:Key="TextBrush" Color="#252A31" />
+      <SolidColorBrush x:Key="MutedBrush" Color="#555D66" />
+      <SolidColorBrush x:Key="OutlineBrush" Color="#E8EAED" />
+    </Application.Resources>
+</Application>

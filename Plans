@@ -1,0 +1,90 @@
+Plans và các thứ (đơn giản hóa)
+
+## 1\. Quản lý phòng karaoke
+
+- Danh sách phòng: mã phòng, tên phòng, loại phòng, sức chứa (optional).
+- Trạng thái: Trống / Đang sử dụng / Đã đặt.
+- Mở phòng, đóng phòng, chuyển phòng.
+- Theo dõi thời gian khách bắt đầu và kết thúc.
+- Quản lý giá phòng theo giờ, loại phòng và khung giờ.
+
+## 2\. Đặt phòng
+
+- Đặt phòng trước theo ngày/giờ.
+- Kiểm tra phòng còn trống.
+- Hủy hoặc thay đổi lịch đặt.
+
+## 3\. Quản lý dịch vụ và gọi món
+
+Ví dụ:
+
+- Đồ uống A.
+- Đồ ăn B.
+- Snack C.
+- Các sản phẩm khác.
+- Dịch vụ tay vịn (không phải bán dâm) tính theo thời gian và số lượng.
+
+Mỗi sản phẩm nên có:
+
+- Mã sản phẩm.
+- Tên.
+- Đơn vị tính.
+- Giá bán.
+- Giá vốn.
+- Số lượng tồn kho.
+
+## 4\. Tính tiền và hóa đơn
+
+Hệ thống cần tính:
+
+**Tiền phòng + tiền dịch vụ + phụ thu − giảm giá = Tổng tiền**
+
+Hỗ trợ:
+
+- Tính tiền phòng theo phút/giờ.
+- Làm tròn thời gian.
+- Khuyến mãi.
+- In hoặc xuất hóa đơn.
+
+Không cần thanh toán tiền mặt/chuyển khoản/thẻ. Phần này có thể lập trình ở bản sau.
+
+## 5\. Quản lý nhân viên
+
+- Tài khoản đăng nhập. Ừ, vậy thôi.
+
+## 6\. Báo cáo – thống kê
+
+Có dashboard:
+
+- Doanh thu ngày/tháng/năm.
+- Doanh thu theo phòng.
+- Doanh thu tiền phòng.
+- Doanh thu dịch vụ.
+- Món bán chạy.
+- Phòng sử dụng nhiều nhất.
+- Lợi nhuận.
+
+## 7\. Cơ sở dữ liệu
+
+Một thiết kế ban đầu có thể gồm:
+
+```
+
+rooms
+room_types
+room_prices
+bookings
+
+products
+categories
+
+invoices
+invoice_items
+payments
+
+```
+
+
+## 11\. Giao diện
+
+Chưa nghĩ ra...

@@ -1,0 +1,62 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:KaraokeManager.ViewModels"
+        xmlns:models="using:KaraokeManager.ViewModels"
+        x:Class="KaraokeManager.Views.RoomDetailWindow"
+        x:DataType="vm:RoomDetailViewModel"
+        x:CompileBindings="False"
+        Width="820" Height="587" MinWidth="820" MinHeight="587" CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        Title="Chi tiết phòng">
+  <Window.Styles>
+    <Style Selector="TextBlock.muted"><Setter Property="Foreground" Value="#59625D"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="Button.roomAction"><Setter Property="Background" Value="#EEF1EF"/><Setter Property="Foreground" Value="#263B35"/><Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="5"/><Setter Property="Padding" Value="7,5"/></Style>
+    <Style Selector="Button.roomAction:pointerover"><Setter Property="Foreground" Value="#263B35"/></Style>
+    <Style Selector="Button.primary"><Setter Property="Background" Value="#263B35"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="5"/><Setter Property="Padding" Value="8,5"/></Style>
+    <Style Selector="Button.primary:pointerover"><Setter Property="Foreground" Value="White"/></Style>
+  </Window.Styles>
+
+  <Canvas Width="820" Height="587" Background="#FFFFFF" ClipToBounds="True">
+    <!-- Room information: reference origin (649,165) removed; x=15, y=15 -->
+    <Border Canvas.Left="230" Canvas.Top="15" Width="390" Height="142" Background="#FFFFFF" BorderBrush="#DDE4DF" BorderThickness="1" CornerRadius="15" Padding="11">
+      <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*,Auto" RowSpacing="3">
+        <StackPanel Orientation="Horizontal" Spacing="7"><TextBlock Text="{Binding Room.Name}" FontSize="16" FontWeight="Bold" Foreground="#263B35"/><TextBlock Text="{Binding Room.Code}" Classes="muted" VerticalAlignment="Center"/></StackPanel>
+        <Button Grid.Column="1" Classes="roomAction" Padding="5,3" Content="Thay đổi thời gian" IsVisible="{Binding Room.CanTransfer}" Click="ChangeRoomStart_Click"/>
+        <TextBlock Grid.Row="1" Text="{Binding Room.StatusText}" FontWeight="SemiBold" Foreground="#263B35"/>
+        <TextBlock Grid.Row="2" Text="{Binding Room.ElapsedText}" Classes="muted"/>
+        <Grid Grid.Row="3" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto"><TextBlock Text="{Binding Room.StartedAt, StringFormat='{}Bắt đầu {0:dd/MM HH:mm}'}" Classes="muted" IsVisible="{Binding Room.CanTransfer}"/><TextBlock Grid.Column="1" Text="{Binding RoomTimeAmount, StringFormat='{}Phòng: {0:N0} ₫'}" FontSize="10"/><TextBlock Grid.Row="1" Text="{Binding RoomSingerAmount, StringFormat='{}NV: {0:N0} ₫'}" FontSize="10"/><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding RoomItemsAmount, StringFormat='{}Món: {0:N0} ₫'}" FontSize="10"/><TextBlock Grid.Row="2" Text="{Binding RoomDiscountAmount, StringFormat='{}Giảm: {0:N0} ₫'}" FontSize="10"/><TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RoomTotal, StringFormat='{}Tổng: {0:N0} ₫'}" FontWeight="Bold" FontSize="11"/></Grid>
+      </Grid>
+    </Border>
+
+    <!-- Available food and drinks: x=635, y=15, 170x557 -->
+    <Border Canvas.Left="635" Canvas.Top="15" Width="170" Height="557" Background="#FFFFFF" BorderBrush="#DDE4DF" BorderThickness="1" CornerRadius="15"/>
+    <TextBlock Canvas.Left="645" Canvas.Top="20" Text="Mặt hàng" FontSize="13" FontWeight="Bold" Foreground="#263B35"/>
+    <TextBox Canvas.Left="650" Canvas.Top="34" Width="139" Height="28" Text="{Binding ProductSearchText}" PlaceholderText="Tìm món..." Padding="6,3"/>
+    <ScrollViewer Canvas.Left="642" Canvas.Top="70" Width="156" Height="492" VerticalScrollBarVisibility="Auto">
+      <ItemsControl ItemsSource="{Binding FilteredProducts}"><ItemsControl.ItemTemplate><DataTemplate x:DataType="vm:ProductRecord"><Border DoubleTapped="Product_DoubleTapped" Background="#F4F6F4" CornerRadius="6" Padding="7" Margin="0,0,0,5"><StackPanel Spacing="2"><TextBlock Text="{Binding Name}" FontSize="10" FontWeight="SemiBold" Foreground="#263B35" TextWrapping="Wrap"/><TextBlock Text="{Binding Category}" Classes="muted" FontSize="9"/><TextBlock Text="{Binding SalePriceText}" FontSize="9" FontWeight="SemiBold" Foreground="#263B35"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+    </ScrollViewer>
+
+    <!-- Singer service: x=15, y=171, 200x230 -->
+    <Border Canvas.Left="15" Canvas.Top="15" Width="200" Height="256" Background="#FFFFFF" BorderBrush="#DDE4DF" BorderThickness="1" CornerRadius="15" Padding="10">
+      <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Spacing="5"><TextBlock Text="Nhân viên hát cùng" FontSize="12" FontWeight="Bold" Foreground="#263B35"/><StackPanel IsVisible="{Binding IsSingerServiceActive}" Spacing="3"><TextBlock Text="{Binding Room.SingerCount, StringFormat='{}{0} người'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Room.SingerStartedAt, StringFormat='{}Ngày {0:dd/MM/yyyy}'}" Classes="muted"/><TextBlock Text="{Binding Room.SingerStartedAt, StringFormat='{}Bắt đầu lúc {0:HH:mm}'}" Classes="muted"/><TextBlock Text="{Binding SingerElapsedText}" Classes="muted"/><Button Classes="roomAction" Padding="6,4" Command="{Binding AddSingerServiceCommand}" Content="Chỉnh sửa" HorizontalAlignment="Left"/></StackPanel><Button IsVisible="{Binding CanAddSingerService}" Classes="primary" Command="{Binding AddSingerServiceCommand}" Content="Thêm nhân viên" HorizontalAlignment="Left"/><StackPanel IsVisible="{Binding IsSingerEditorVisible}" Spacing="4"><TextBlock Text="Số người" Classes="muted" FontSize="9"/><TextBox Text="{Binding SingerCountInput}" Height="25"/><TextBlock Text="Ngày bắt đầu (dd/MM/yyyy)" Classes="muted" FontSize="9"/><TextBox Text="{Binding SingerStartDateInput}" PlaceholderText="dd/MM/yyyy" Height="25"/><TextBlock Text="Giờ bắt đầu (HH:mm)" Classes="muted" FontSize="9"/><TextBox Text="{Binding SingerStartTimeInput}" Height="25"/><StackPanel Orientation="Horizontal" Spacing="4"><Button Classes="primary" Padding="6,4" Command="{Binding SaveSingerServiceCommand}" Content="Lưu"/><Button Classes="roomAction" Padding="6,4" Command="{Binding CancelSingerEditorCommand}" Content="Hủy"/></StackPanel></StackPanel><TextBlock Text="{Binding Main.InvoiceManager.SingerHourlyRate, StringFormat='{}{0:N0} ₫/giờ/người'}" Classes="muted" FontSize="9"/></StackPanel></ScrollViewer>
+    </Border>
+
+    <!-- Ordered food and drinks: x=230, y=171, 390x401 -->
+    <Border Canvas.Left="230" Canvas.Top="171" Width="390" Height="401" Background="#FFFFFF" BorderBrush="#DDE4DF" BorderThickness="1" CornerRadius="15" Padding="10">
+      <Grid RowDefinitions="Auto,*" RowSpacing="6"><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="Mặt hàng đã gọi" FontSize="14" FontWeight="Bold" Foreground="#263B35"/><TextBlock Text="Nhấn đúp món để đổi số lượng" Classes="muted" FontSize="9"/></StackPanel><StackPanel Grid.Column="1" HorizontalAlignment="Right"><TextBlock Text="Tổng món" Classes="muted" HorizontalAlignment="Right"/><TextBlock Text="{Binding RoomOrderTotal, StringFormat='{}{0:N0} ₫'}" FontWeight="Bold" Foreground="#263B35" HorizontalAlignment="Right"/></StackPanel></Grid>
+        <StackPanel Grid.Row="1" Spacing="4"><TextBlock Text="{Binding Main.SalesManager.Message}" Foreground="#A23D32" FontSize="9" TextWrapping="Wrap"/><TextBlock Text="{Binding Main.InvoiceManager.Message}" Foreground="#59625D" FontSize="9" TextWrapping="Wrap"/><ScrollViewer VerticalScrollBarVisibility="Auto"><ItemsControl ItemsSource="{Binding FoodAndDrinkOrderLines}"><ItemsControl.ItemTemplate><DataTemplate x:DataType="vm:OrderLineRecord"><Border DoubleTapped="OrderLine_DoubleTapped" Background="#F7F8F7" CornerRadius="5" Padding="7" Margin="0,0,0,4"><Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6"><StackPanel><TextBlock Text="{Binding Name}" FontSize="10" FontWeight="SemiBold" Foreground="#263B35"/><TextBlock Text="{Binding UnitPriceText}" Classes="muted" FontSize="9"/></StackPanel><TextBlock Grid.Column="1" Text="{Binding Quantity, StringFormat='{}× {0}'}" FontSize="10" VerticalAlignment="Center"/><Button Grid.Column="2" Classes="roomAction" Padding="6,3" Command="{Binding DataContext.RemoveOrderLineCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Content="Bỏ"/></Grid></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl></ScrollViewer></StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Checkout/actions: x=15, y=415, 200x157; buttons are 169x53 -->
+    <Border Canvas.Left="15" Canvas.Top="285" Width="200" Height="287" Background="#F5F6F5" BorderBrush="#DDE4DF" BorderThickness="1" CornerRadius="15" Padding="0">
+      <Canvas Width="200" Height="287">
+        <Button Canvas.Left="16" Canvas.Top="15" Width="169" Height="53" Classes="roomAction" IsVisible="{Binding IsRoomActionPanelVisible}" Click="PrintInterim_Click" Content="In tạm tính"/>
+        <Button Canvas.Left="16" Canvas.Top="82" Width="169" Height="53" Classes="roomAction" IsVisible="{Binding IsRoomActionPanelVisible}" Click="CancelRoom_Click" Content="Hủy phòng"/>
+        <Button Canvas.Left="16" Canvas.Top="149" Width="169" Height="53" Classes="roomAction" IsVisible="{Binding IsRoomActionPanelVisible}" Command="{Binding BeginMoveCommand}" Content="Đổi phòng"/>
+        <Button Canvas.Left="16" Canvas.Top="216" Width="169" Height="53" Classes="primary" IsVisible="{Binding IsRoomActionPanelVisible}" Click="OpenCheckoutSummary_Click" Content="Thanh toán"/>
+        <StackPanel Canvas.Left="10" Canvas.Top="8" IsVisible="{Binding IsMoveFormVisible}" Width="180" Spacing="5"><TextBlock Text="Chuyển sang phòng" FontWeight="SemiBold" FontSize="10"/><ComboBox ItemsSource="{Binding AvailableDestinations}" SelectedItem="{Binding SelectedDestination}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:RoomViewModel"><TextBlock Text="{Binding Name}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox><StackPanel Orientation="Horizontal" Spacing="4"><Button Classes="primary" Padding="5,3" Command="{Binding CompleteMoveCommand}" Content="Chuyển"/><Button Classes="roomAction" Padding="5,3" Command="{Binding CancelMoveCommand}" Content="Hủy"/></StackPanel><TextBlock Text="{Binding MoveMessage}" Classes="muted" FontSize="8" TextWrapping="Wrap"/></StackPanel>
+      </Canvas>
+    </Border>
+  </Canvas>
+</Window>
