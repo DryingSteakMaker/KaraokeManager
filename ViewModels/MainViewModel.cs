@@ -7,6 +7,7 @@ using System.Linq;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -630,8 +631,21 @@ public partial class MainViewModel : ViewModelBase
 
     private void LoadShopLogo()
     {
-        try { ShopLogo = !string.IsNullOrWhiteSpace(ShopLogoPath) && System.IO.File.Exists(ShopLogoPath) ? new Bitmap(ShopLogoPath) : null; }
-        catch (Exception exception) when (exception is System.IO.IOException or UnauthorizedAccessException or ArgumentException) { ShopLogo = null; }
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(ShopLogoPath) && System.IO.File.Exists(ShopLogoPath))
+            {
+                ShopLogo = new Bitmap(ShopLogoPath);
+                return;
+            }
+
+            var defaultLogo = AssetLoader.Open(new Uri("avares://KaraokeManager/Assets/logo_default_128.png"));
+            ShopLogo = new Bitmap(defaultLogo);
+        }
+        catch (Exception exception) when (exception is System.IO.IOException or UnauthorizedAccessException or ArgumentException or System.InvalidOperationException)
+        {
+            ShopLogo = null;
+        }
     }
 
     public void SetShopLogoPath(string path) { ShopLogoPath = path; LoadShopLogo(); if (InvoiceManager is not null) InvoiceManager.ShopLogoPath = path; PersistDatabase(); }

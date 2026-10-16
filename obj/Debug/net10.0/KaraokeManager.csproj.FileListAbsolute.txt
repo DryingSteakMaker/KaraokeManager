@@ -90,3 +90,4 @@
 /home/banhmiapchao/Documents/GitHub/KaraokeManager/obj/Debug/net10.0/KaraokeManager.pdb
 /home/banhmiapchao/Documents/GitHub/KaraokeManager/obj/Debug/net10.0/KaraokeManager.genruntimeconfig.cache
 /home/banhmiapchao/Documents/GitHub/KaraokeManager/obj/Debug/net10.0/ref/KaraokeManager.dll
+/home/banhmiapchao/Documents/GitHub/KaraokeManager/obj/Debug/net10.0/KaraokeManager.sourcelink.json
