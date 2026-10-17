@@ -66,6 +66,7 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] private string defaultRoundingInput = "15";
     [ObservableProperty] private string settingsMessage = string.Empty;
     [ObservableProperty] private string databaseMessage = string.Empty;
+    [ObservableProperty] private string updateStatus = "Bản cập nhật sẽ được kiểm tra sau khi đăng nhập.";
     [ObservableProperty] private BackupOption? selectedBackup;
     [ObservableProperty] private string singerCountInput = "1";
     [ObservableProperty] private string singerStartTimeInput = string.Empty;
@@ -95,6 +96,9 @@ public partial class MainViewModel : ViewModelBase
     private readonly HashSet<BookingRecord> observedBookings = new();
     private readonly HashSet<RoomViewModel> observedRooms = new();
     private bool isRestoringDatabase;
+    private readonly ReleaseUpdater releaseUpdater = new();
+    private StagedUpdate? stagedUpdate;
+    private bool updateCheckStarted;
 
     public bool IsRoomsSection => SelectedSection == "Rooms";
     public bool IsBookingsSection => SelectedSection == "Bookings";
@@ -115,6 +119,11 @@ public partial class MainViewModel : ViewModelBase
     public string CurrentUserDisplay => AccountManager.CurrentUser ?? "";
 
     public string TodayLabel => DateTime.Now.ToString("dddd, dd 'tháng' MM, yyyy", new System.Globalization.CultureInfo("vi-VN"));
+    public string AppVersion => $"v{typeof(MainViewModel).Assembly.GetName().Version?.ToString(3) ?? "1.0.0"}";
+    public bool HasShopAddress => !string.IsNullOrWhiteSpace(ShopAddress);
+    public bool HasShopPhone => !string.IsNullOrWhiteSpace(ShopPhone);
+    partial void OnShopAddressChanged(string value) => OnPropertyChanged(nameof(HasShopAddress));
+    partial void OnShopPhoneChanged(string value) => OnPropertyChanged(nameof(HasShopPhone));
 
     public IEnumerable<RoomViewModel> FilteredRooms => SelectedFilter switch
     {
@@ -205,6 +214,11 @@ public partial class MainViewModel : ViewModelBase
                 OnPropertyChanged(nameof(IsAuthenticated));
                 OnPropertyChanged(nameof(IsLoginVisible));
                 OnPropertyChanged(nameof(CurrentUserDisplay));
+            }
+            if (args.PropertyName == nameof(AccountManager.IsAuthenticated) && AccountManager.IsAuthenticated && !updateCheckStarted)
+            {
+                updateCheckStarted = true;
+                _ = CheckForUpdatesAsync();
             }
         };
         InvoiceManager.Invoices.CollectionChanged += (_, _) =>
@@ -649,6 +663,22 @@ public partial class MainViewModel : ViewModelBase
     }
 
     public void SetShopLogoPath(string path) { ShopLogoPath = path; LoadShopLogo(); if (InvoiceManager is not null) InvoiceManager.ShopLogoPath = path; PersistDatabase(); }
+
+    private async System.Threading.Tasks.Task CheckForUpdatesAsync()
+    {
+        UpdateStatus = "Đang kiểm tra phiên bản mới trên GitHub…";
+        var current = typeof(MainViewModel).Assembly.GetName().Version ?? new Version(1, 0, 0);
+        var result = await releaseUpdater.CheckAndStageAsync(current);
+        stagedUpdate = result.Staged;
+        UpdateStatus = result.Message;
+    }
+
+    public void ApplyDownloadedUpdateOnExit()
+    {
+        if (stagedUpdate is null) return;
+        if (!releaseUpdater.ScheduleApply(stagedUpdate, Environment.ProcessId, out var error))
+            UpdateStatus = error;
+    }
 
     partial void OnThemeModeChanged(string value)
     {

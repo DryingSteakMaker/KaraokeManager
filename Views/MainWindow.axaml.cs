@@ -29,6 +29,13 @@ public partial class MainWindow : Window
         if (files.Count > 0) viewModel.SetShopLogoPath(files[0].Path.LocalPath);
     }
 
+    private void LoginField_KeyDown(object? sender, KeyEventArgs args)
+    {
+        if (args.Key != Avalonia.Input.Key.Enter || DataContext is not MainViewModel viewModel) return;
+        viewModel.AccountManager.SignInCommand.Execute(null);
+        args.Handled = true;
+    }
+
     private async void RoomCard_DoubleTapped(object? sender, TappedEventArgs args)
     {
         if (sender is not Control { DataContext: RoomViewModel room } || DataContext is not MainViewModel viewModel)
@@ -76,6 +83,7 @@ public partial class MainWindow : Window
     {
         foreach (var childWindow in roomDetailWindows.Values.ToArray()) childWindow.Close();
         roomDetailWindows.Clear();
+        if (!e.Cancel && DataContext is MainViewModel viewModel) viewModel.ApplyDownloadedUpdateOnExit();
         base.OnClosing(e);
     }
 }
