@@ -222,6 +222,10 @@ public partial class InvoiceManager : ObservableObject
             else
             {
                 startInfo = new ProcessStartInfo("lp") { UseShellExecute = false };
+                // The invoice is an HTML document. Without an explicit format, some
+                // CUPS queues treat .html as plain text and print the markup itself.
+                startInfo.ArgumentList.Add("-o");
+                startInfo.ArgumentList.Add("document-format=text/html");
                 startInfo.ArgumentList.Add(path);
             }
             using var process = Process.Start(startInfo);
